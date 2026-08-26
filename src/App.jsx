@@ -120,23 +120,186 @@
 // }
 
 // export default App
-import { useState } from 'react'
+// import { useState } from 'react'
+// import './App.css'
+
+// function App() {
+//   const [task, setTask] = useState('')
+//   const [tasks, setTasks] = useState([])
+
+//   const addTask = (event) => {
+//     event.preventDefault()
+//     const description = task.trim()
+//     if (!description) return
+//     setTasks(currentTasks => [...currentTasks, description])
+//     setTask('')
+//   }
+
+//   const deleteTask = (deleted) => {
+//     setTasks(currentTasks => currentTasks.filter(item => item !== deleted))
+//   }
+
+//   return (
+//     <div id="container">
+//       <h1>Todos</h1>
+
+//       <form onSubmit={addTask}>
+//         <input
+//           type="text"
+//           value={task}
+//           onChange={(event) => setTask(event.target.value)}
+//         />
+//         <button type="submit">Add</button>
+//       </form>
+
+//       <ul>
+//         {
+//           tasks.map(item => (
+//             <li key={item}>
+//               {item}
+//               <button
+//                 className="delete-button"
+//                 onClick={() => deleteTask(item)}
+//               >
+//                 Delete
+//               </button>
+//             </li>
+//           ))
+//         }
+//       </ul>
+//     </div>
+//   )
+// }
+
+// export default App
+
+// import './App.css'
+// import { useState, useEffect } from 'react'
+// import axios from 'axios'
+
+// const apiUrl = 'http://localhost:3001'
+
+// function App() {
+//   const [task, setTask] = useState('')
+//   const [tasks, setTasks] = useState([])
+
+//   useEffect(() => {
+//     axios.get(`${apiUrl}/tasks`)
+//       .then(response => {
+//         setTasks(response.data)
+//       })
+//       .catch(error => {
+//         alert(error.response?.data ? error.response.data.message : error.message)
+//       })
+//   }, [])
+
+//   const addTask = (e) => {
+//     e.preventDefault()
+
+//     const newTask = { description: task }
+
+//     axios.post(`${apiUrl}/tasks`, { task: newTask })
+//       .then(response => {
+//         setTasks(currentTasks => [...currentTasks, response.data])
+//         setTask('')
+//       })
+//       .catch(error => {
+//         alert(error.response ? error.response.data.error : error.message)
+//       })
+//   }
+
+//   const deleteTask = (deleted) => {
+//     axios.delete(`${apiUrl}/tasks/${deleted}`)
+//       .then(() => {
+//         setTasks(currentTasks =>
+//           currentTasks.filter(item => item.id !== deleted)
+//         )
+//       })
+//       .catch(error => {
+//         alert(error.response ? error.response.data.error : error.message)
+//       })
+//   }
+
+//   return (
+//     <div id="container">
+//       <h1>Todos</h1>
+
+//       <form onSubmit={addTask}>
+//         <input
+//           type="text"
+//           value={task}
+//           onChange={(event) => setTask(event.target.value)}
+//         />
+//         <button type="submit">Add</button>
+//       </form>
+
+//       <ul>
+//         {
+//           tasks.map(item => (
+//             <li key={item.id}>
+//               {item.description}
+//               <button
+//                 className="delete-button"
+//                 onClick={() => deleteTask(item.id)}
+//               >
+//                 Delete
+//               </button>
+//             </li>
+//           ))
+//         }
+//       </ul>
+//     </div>
+//   )
+// }
+
+// export default App
+
 import './App.css'
+import { useState, useEffect } from 'react'
+import axios from 'axios'
+import Row from './components/Row'
+
+const apiUrl = 'http://localhost:3001'
 
 function App() {
   const [task, setTask] = useState('')
   const [tasks, setTasks] = useState([])
 
-  const addTask = (event) => {
-    event.preventDefault()
-    const description = task.trim()
-    if (!description) return
-    setTasks(currentTasks => [...currentTasks, description])
-    setTask('')
+  useEffect(() => {
+    axios.get(`${apiUrl}/tasks`)
+      .then(response => {
+        setTasks(response.data)
+      })
+      .catch(error => {
+        alert(error.response?.data ? error.response.data.message : error.message)
+      })
+  }, [])
+
+  const addTask = (e) => {
+    e.preventDefault()
+
+    const newTask = { description: task }
+
+    axios.post(`${apiUrl}/tasks`, { task: newTask })
+      .then(response => {
+        setTasks(currentTasks => [...currentTasks, response.data])
+        setTask('')
+      })
+      .catch(error => {
+        alert(error.response ? error.response.data.error : error.message)
+      })
   }
 
   const deleteTask = (deleted) => {
-    setTasks(currentTasks => currentTasks.filter(item => item !== deleted))
+    axios.delete(`${apiUrl}/tasks/${deleted}`)
+      .then(() => {
+        setTasks(currentTasks =>
+          currentTasks.filter(item => item.id !== deleted)
+        )
+      })
+      .catch(error => {
+        alert(error.response ? error.response.data.error : error.message)
+      })
   }
 
   return (
@@ -154,16 +317,12 @@ function App() {
 
       <ul>
         {
-          tasks.map(item => (
-            <li key={item}>
-              {item}
-              <button
-                className="delete-button"
-                onClick={() => deleteTask(item)}
-              >
-                Delete
-              </button>
-            </li>
+          tasks.map(task => (
+            <Row
+              key={task.id}
+              task={task}
+              onDelete={deleteTask}
+            />
           ))
         }
       </ul>
