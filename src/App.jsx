@@ -254,16 +254,96 @@
 
 // export default App
 
+// import './App.css'
+// import { useState, useEffect } from 'react'
+// import axios from 'axios'
+// import Row from './components/Row'
+
+// const apiUrl = 'http://localhost:3001'
+
+// function App() {
+//   const [task, setTask] = useState('')
+//   const [tasks, setTasks] = useState([])
+
+//   useEffect(() => {
+//     axios.get(`${apiUrl}/tasks`)
+//       .then(response => {
+//         setTasks(response.data)
+//       })
+//       .catch(error => {
+//         alert(error.response?.data ? error.response.data.message : error.message)
+//       })
+//   }, [])
+
+//   const addTask = (e) => {
+//     e.preventDefault()
+
+//     const newTask = { description: task }
+
+//     axios.post(`${apiUrl}/tasks`, { task: newTask })
+//       .then(response => {
+//         setTasks(currentTasks => [...currentTasks, response.data])
+//         setTask('')
+//       })
+//       .catch(error => {
+//         alert(error.response ? error.response.data.error : error.message)
+//       })
+//   }
+
+//   const deleteTask = (deleted) => {
+//     axios.delete(`${apiUrl}/tasks/${deleted}`)
+//       .then(() => {
+//         setTasks(currentTasks =>
+//           currentTasks.filter(item => item.id !== deleted)
+//         )
+//       })
+//       .catch(error => {
+//         alert(error.response ? error.response.data.error : error.message)
+//       })
+//   }
+
+//   return (
+//     <div id="container">
+//       <h1>Todos</h1>
+
+//       <form onSubmit={addTask}>
+//         <input
+//           type="text"
+//           value={task}
+//           onChange={(event) => setTask(event.target.value)}
+//         />
+//         <button type="submit">Add</button>
+//       </form>
+
+//       <ul>
+//         {
+//           tasks.map(task => (
+//             <Row
+//               key={task.id}
+//               task={task}
+//               onDelete={deleteTask}
+//             />
+//           ))
+//         }
+//       </ul>
+//     </div>
+//   )
+// }
+
+// export default App
+
 import './App.css'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import Row from './components/Row'
+import { useUser } from './context/useUser'
 
-const apiUrl = 'http://localhost:3001'
+const apiUrl = import.meta.env.VITE_API_URL
 
 function App() {
   const [task, setTask] = useState('')
   const [tasks, setTasks] = useState([])
+  const { user } = useUser()
 
   useEffect(() => {
     axios.get(`${apiUrl}/tasks`)
@@ -278,27 +358,54 @@ function App() {
   const addTask = (e) => {
     e.preventDefault()
 
+    const headers = {
+      headers: {
+        Authorization: `Bearer ${user.token}`
+      }
+    }
+
     const newTask = { description: task }
 
-    axios.post(`${apiUrl}/tasks`, { task: newTask })
+    axios.post(
+      `${apiUrl}/tasks`,
+      { task: newTask },
+      headers
+    )
       .then(response => {
         setTasks(currentTasks => [...currentTasks, response.data])
         setTask('')
       })
       .catch(error => {
-        alert(error.response ? error.response.data.error : error.message)
+        alert(
+          error.response
+            ? error.response.data.error.message
+            : error
+        )
       })
   }
 
   const deleteTask = (deleted) => {
-    axios.delete(`${apiUrl}/tasks/${deleted}`)
+    const headers = {
+      headers: {
+        Authorization: `Bearer ${user.token}`
+      }
+    }
+
+    axios.delete(
+      `${apiUrl}/tasks/${deleted}`,
+      headers
+    )
       .then(() => {
         setTasks(currentTasks =>
           currentTasks.filter(item => item.id !== deleted)
         )
       })
       .catch(error => {
-        alert(error.response ? error.response.data.error : error.message)
+        alert(
+          error.response
+            ? error.response.data.error.message
+            : error
+        )
       })
   }
 
