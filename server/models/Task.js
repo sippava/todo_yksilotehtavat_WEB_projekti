@@ -1,25 +1,17 @@
-// import { pool } from '../helper/db.js'
+//Aluksi tein server kansioon models ja controllers kansiot. Tänne liitin lopulta tämän koodin.
 
-// const selectAllTasks = async () => {
-//   return await pool.query('SELECT * FROM task')
-// }
+//Eli Task.js toimii modelina. Siirsin tänne tietokantaan liittyvät SQL-kyselyt.
 
-// export { selectAllTasks }
+// Ensin tein selectAllTasks-funktion,
+// joka hakee kaikki tehtävät task-taulusta.
 
-// import { pool } from '../helper/db.js'
+// Seuraavaksi tein insertTask-funktion,
+// joka lisää uuden tehtävän tietokantaan.
 
-// const selectAllTasks = async () => {
-//   return await pool.query('SELECT * FROM task')
-// }
-
-// const insertTask = async (description) => {
-//   return await pool.query(
-//     'insert into task (description) values ($1) returning *',
-//     [description]
-//   )
-// }
-
-// export { selectAllTasks, insertTask }
+// Lopuksi tein deleteTask-funktion.
+// Tehtävänannossa DELETE-toiminnon MVC-rakennetta ei annettu valmiina,
+// vaan se tehtiin aikaisempien esimerkkien perusteella.
+// Funktio poistaa tehtävän sen id:n perusteella.
 
 import { pool } from '../helper/db.js'
 
